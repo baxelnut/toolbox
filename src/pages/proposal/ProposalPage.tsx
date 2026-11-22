@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 // Style
 import "./ProposalPage.css";
-// Hooks
+// Contexts & Hooks
+import { useToast } from "@/contexts";
 import { useProposal } from "@/hooks";
 // Components
 import { Button, PrintRoot, SheetPreview, ToolPage } from "@/components";
@@ -9,14 +10,16 @@ import { ClientSection, ContentSection, DocumentSection } from "./_components";
 import { PricingSection, ProfileSection } from "./_components";
 import { ProposalSheet, TimelineSection } from "./_components";
 // Utils
-import { safeFilename } from "@/lib/invoice";
+import { safeFilename, downloadBlob } from "@/lib";
 import { buildProposalDocument } from "@/lib/proposal";
 
 const PAGE_CSS = "@page { size: A4; margin: 15mm 15mm 18mm; }";
 
 export default function ProposalPage() {
   const proposal = useProposal();
+  const { toast } = useToast();
   const [printing, setPrinting] = useState(false);
+  const [wording, setWording] = useState(false);
 
   const doc = useMemo(
     () =>
@@ -31,6 +34,22 @@ export default function ProposalPage() {
   const fileTitle = safeFilename(
     [doc.number, doc.client.name].filter(Boolean).join(" - "),
   );
+
+  const downloadWord = async () => {
+    setWording(true);
+    try {
+      const { buildProposalDocx } = await import("@/lib/word/proposal");
+      downloadBlob(await buildProposalDocx(doc), `${fileTitle}.docx`);
+      proposal.markPrinted();
+      toast("Downloaded");
+    } catch {
+      toast("Could not create the Word file");
+    } finally {
+      setWording(false);
+    }
+  };
+
+  const busy = printing || wording;
 
   return (
     <ToolPage toolId="proposal">
@@ -48,14 +67,22 @@ export default function ProposalPage() {
           <div className="proposal__bar">
             <Button
               icon="download"
-              disabled={printing}
+              disabled={busy}
               onClick={() => setPrinting(true)}
             >
               Download PDF
             </Button>
+            <Button
+              variant="outline"
+              icon="download"
+              disabled={busy}
+              onClick={() => void downloadWord()}
+            >
+              Download Word
+            </Button>
             <small>
-              In the print dialog pick "Save as PDF", paper A4, and untick
-              "Headers and footers".
+              PDF: pick "Save as PDF", paper A4, and untick "Headers and
+              footers". Word: simplified layout, edit freely.
             </small>
           </div>
 

@@ -53,7 +53,7 @@ export default function InvoicePage() {
             >
               Download PDF
             </Button>
-            <small>Pick "Save as PDF" and paper A4 in the print dialog.</small>
+            {/* <small>Pick "Save as PDF" and paper A4 in the print dialog.</small> */}
           </div>
 
           {invoice.issues.length > 0 && (
