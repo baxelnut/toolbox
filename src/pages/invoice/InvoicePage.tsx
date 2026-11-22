@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 // Style
 import "./InvoicePage.css";
 // Hooks
@@ -23,6 +23,14 @@ export default function InvoicePage() {
   const fileTitle = safeFilename(
     [doc.number, doc.client.name].filter(Boolean).join(" - "),
   );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.pageScroll = "";
+    return () => {
+      delete root.dataset.pageScroll;
+    };
+  }, []);
 
   return (
     <ToolPage toolId="invoice">

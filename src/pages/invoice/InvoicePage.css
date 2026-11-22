@@ -94,3 +94,36 @@
     min-height: 296mm;
   }
 }
+
+/* Mobile: let the whole page scroll instead of fitting the screen */
+@media (max-width: 1023px) {
+  html[data-page-scroll],
+  html[data-page-scroll] body,
+  html[data-page-scroll] .app {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  html[data-page-scroll] .page {
+    flex: 1 0 auto;
+    overflow: visible;
+  }
+
+  html[data-page-scroll] .page > .container,
+  html[data-page-scroll] .page-grid > .section,
+  html[data-page-scroll] .scroll-area {
+    flex: none;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  html[data-page-scroll] .page-grid {
+    grid-template-rows: auto auto;
+  }
+
+  html[data-page-scroll] .invoice {
+    padding-bottom: var(--space-8);
+  }
+}
