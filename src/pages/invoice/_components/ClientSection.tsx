@@ -1,8 +1,7 @@
 // Hooks
 import type { InvoiceController } from "@/hooks";
 // Components
-import { Button, Disclosure, TextInput, Textarea } from "@/components";
-import { ListRow } from "./ListRow";
+import { Button, Disclosure, TextInput, Textarea, ListRow } from "@/components";
 
 export function ClientSection({ invoice }: { invoice: InvoiceController }) {
   const { draft } = invoice;

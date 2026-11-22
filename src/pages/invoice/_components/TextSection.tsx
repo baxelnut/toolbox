@@ -1,8 +1,8 @@
 // Hooks
 import type { InvoiceController } from "@/hooks";
 // Components
-import { Button, Disclosure, Select, TextInput, Textarea } from "@/components";
-import { ListRow } from "./ListRow";
+import { Button, Disclosure, Select } from "@/components";
+import { TextInput, Textarea, ListRow } from "@/components";
 // Utils
 import { pickOption } from "@/lib/qr";
 import { KIND_OPTIONS, WIDTH_OPTIONS, type BlockKind } from "@/lib/invoice";

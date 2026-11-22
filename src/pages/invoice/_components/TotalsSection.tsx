@@ -1,8 +1,7 @@
 // Hooks
 import type { InvoiceController } from "@/hooks";
 // Components
-import { Button, Disclosure, Select, TextInput } from "@/components";
-import { ListRow } from "./ListRow";
+import { Button, Disclosure, Select, TextInput, ListRow } from "@/components";
 // Utils
 import { pickOption } from "@/lib/qr";
 import { ADJUSTMENT_OPTIONS, finiteOrZero } from "@/lib/invoice";

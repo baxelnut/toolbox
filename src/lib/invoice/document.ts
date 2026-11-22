@@ -66,7 +66,7 @@ function splitLines(text: string): string[] {
     .filter(Boolean);
 }
 
-function toSegments(kind: BlockKind, body: string): Segment[] {
+export function toSegments(kind: BlockKind, body: string): Segment[] {
   const rows = splitLines(body);
   if (rows.length === 0) return [];
 

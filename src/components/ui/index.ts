@@ -4,3 +4,4 @@ export { Disclosure } from "./Disclosure";
 export { ProgressBar } from "./ProgressBar";
 export { ToastProvider } from "./Toast";
 export { Card } from "./Card";
+export { ListRow } from "./ListRow";

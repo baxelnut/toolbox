@@ -1,0 +1,20 @@
+#print-root {
+  display: none;
+}
+
+@media print {
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  body > #root {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block;
+  }
+}
