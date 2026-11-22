@@ -14,7 +14,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color-scheme: dark;
-  scrollbar-gutter: stable;
+  height: 100%;
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -25,8 +26,8 @@ html {
 
 body {
   min-width: 320px;
-  min-height: 100dvh;
-  overflow-x: clip;
+  height: 100dvh;
+  overflow: hidden;
   background-color: var(--clr-canvas);
   color: var(--clr-ink);
   font-family: var(--font-body);

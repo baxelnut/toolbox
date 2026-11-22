@@ -1,4 +1,6 @@
 import { Outlet, useNavigation } from "react-router";
+// Routes
+import { ROUTES } from "@/app/routes";
 // Style
 import "./AppShell.css";
 // Components
@@ -7,10 +9,10 @@ import { Header, Footer } from ".";
 import { SITE } from "@/data/site";
 import { TOOLS } from "@/data/tools";
 
-const NAV_LINKS = TOOLS.map((tool) => ({
-  to: tool.path,
-  label: tool.navLabel,
-}));
+const NAV_LINKS = [
+  { to: ROUTES.home, label: "Home" },
+  ...TOOLS.map((tool) => ({ to: tool.path, label: tool.navLabel })),
+];
 
 export function AppShell() {
   const navigation = useNavigation();
@@ -25,11 +27,7 @@ export function AppShell() {
       )}
       <Header brand={SITE.name} links={NAV_LINKS} />
       <Outlet />
-      <Footer
-        owner={SITE.owner}
-        ownerUrl={SITE.ownerUrl}
-        bbaUrl={SITE.bbaUrl}
-      />
+      <Footer owner={SITE.owner} ownerUrl={SITE.ownerUrl} />
     </>
   );
 }

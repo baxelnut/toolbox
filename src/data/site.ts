@@ -3,7 +3,6 @@ type Site = {
   owner: string;
   url: string;
   ownerUrl: string;
-  bbaUrl: string;
 };
 
 export const SITE: Site = {
@@ -11,5 +10,4 @@ export const SITE: Site = {
   owner: "Basilius Tengang",
   url: "https://toolbox.basiliustengang.com",
   ownerUrl: "https://basiliustengang.com",
-  bbaUrl: "https://baritobahalap.com",
 };

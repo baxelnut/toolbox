@@ -1,28 +1,28 @@
 :root {
-  --clr-canvas: var(--palette-forest-900);
-  --clr-surface: var(--palette-forest-850);
-  --clr-surface-raised: var(--palette-forest-800);
-  --clr-border: rgba(var(--palette-bone-100-rgb), 0.12);
-  --clr-border-strong: rgba(var(--palette-bone-100-rgb), 0.32);
-  --clr-field-border: var(--palette-sage-500);
+  --clr-canvas: var(--palette-coal-950);
+  --clr-surface: var(--palette-coal-850);
+  --clr-surface-raised: var(--palette-coal-800);
+  --clr-border: rgba(var(--palette-bone-100-rgb), 0.25);
+  --clr-border-strong: rgba(var(--palette-bone-100-rgb), 0.45);
+  --clr-field-border: var(--palette-ash-500);
 
-  --clr-band: var(--palette-forest-600);
-  --clr-band-deep: var(--palette-forest-700);
-  --clr-band-field: var(--palette-forest-500);
-  --clr-band-ink-muted: var(--palette-sage-300);
-  --clr-wordmark: var(--palette-forest-400);
+  --clr-band: var(--palette-crimson-900);
+  --clr-band-deep: var(--palette-crimson-950);
+  --clr-band-field: var(--palette-crimson-800);
+  --clr-band-ink-muted: var(--palette-rose-300);
+  --clr-wordmark: var(--palette-crimson-700);
 
   --clr-ink: var(--palette-bone-100);
   --clr-ink-soft: var(--palette-bone-200);
-  --clr-ink-muted: var(--palette-sage-400);
-  --clr-ink-faint: var(--palette-forest-400);
+  --clr-ink-muted: var(--palette-ash-400);
+  --clr-ink-faint: var(--palette-coal-400);
 
-  --clr-accent: var(--palette-orange);
-  --clr-accent-rgb: var(--palette-orange-rgb);
-  --clr-accent-2: var(--palette-teal);
-  --clr-accent-2-rgb: var(--palette-teal-rgb);
-  --clr-accent-3: var(--palette-coral);
-  --clr-accent-ink: var(--palette-forest-900);
+  --clr-accent: var(--palette-steel);
+  --clr-accent-rgb: var(--palette-steel-rgb);
+  --clr-accent-2: var(--palette-rose);
+  --clr-accent-2-rgb: var(--palette-rose-rgb);
+  --clr-accent-3: var(--palette-steel-light);
+  --clr-accent-ink: var(--palette-coal-950);
   --clr-focus: var(--palette-bone-100);
 
   --clr-danger: var(--palette-red);
@@ -32,7 +32,7 @@
   --clr-warning: var(--palette-amber);
   --clr-warning-soft: rgba(var(--palette-amber-rgb), 0.14);
 
-  --clr-overlay: rgba(15, 19, 13, 0.8);
+  --clr-overlay: rgba(15, 14, 14, 0.8);
 
   --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "DM Mono", ui-monospace, Menlo, Consolas, monospace;

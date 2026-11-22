@@ -4,10 +4,9 @@ import "./Footer.css";
 type FooterProps = {
   owner: string;
   ownerUrl: string;
-  bbaUrl: string;
 };
 
-export function Footer({ owner, ownerUrl, bbaUrl }: FooterProps) {
+export function Footer({ owner, ownerUrl }: FooterProps) {
   return (
     <footer className="footer">
       <div className="footer__inner">
@@ -17,13 +16,6 @@ export function Footer({ owner, ownerUrl, bbaUrl }: FooterProps) {
             {owner}
           </a>
         </small>
-        {bbaUrl && (
-          <small>
-            <a href={bbaUrl} target="_blank" rel="noopener noreferrer">
-              Barito Bahalap Agency
-            </a>
-          </small>
-        )}
       </div>
     </footer>
   );

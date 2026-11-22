@@ -1,27 +1,30 @@
 :root {
-  --palette-bone-50: #f4f4f2;
-  --palette-bone-100: #e8e8e8;
-  --palette-bone-100-rgb: 232, 232, 232;
-  --palette-bone-200: #c4cbc0;
+  --palette-bone-50: #f6f6f6;
+  --palette-bone-100: #eeeeee;
+  --palette-bone-100-rgb: 238, 238, 238;
+  --palette-bone-200: #cfcdcd;
 
-  --palette-sage-300: #b5bfb1;
-  --palette-sage-400: #9aa595;
-  --palette-sage-500: #7c8978;
+  --palette-ash-300: #b3afaf;
+  --palette-ash-400: #9a9696;
+  --palette-ash-500: #7a7676;
 
-  --palette-forest-400: #4f594c;
-  --palette-forest-500: #394338;
-  --palette-forest-600: #343f2f;
-  --palette-forest-700: #293328;
-  --palette-forest-800: #212a1d;
-  --palette-forest-850: #1a2117;
-  --palette-forest-900: #141a12;
-  --palette-forest-950: #0f130d;
+  --palette-coal-400: #4a4646;
+  --palette-coal-500: #353232;
+  --palette-coal-800: #252424;
+  --palette-coal-850: #1a1818;
+  --palette-coal-950: #0f0e0e;
 
-  --palette-orange: #fb8d00;
-  --palette-orange-rgb: 251, 141, 0;
-  --palette-teal: #29a88b;
-  --palette-teal-rgb: 41, 168, 139;
-  --palette-coral: #fa793d;
+  --palette-crimson-700: #7e2828;
+  --palette-crimson-800: #6b1b1b;
+  --palette-crimson-900: #541212;
+  --palette-crimson-950: #3a0d0d;
+  --palette-rose-300: #e0b4b2;
+
+  --palette-steel: #468a9a;
+  --palette-steel-rgb: 70, 138, 154;
+  --palette-steel-light: #6aaebe;
+  --palette-rose: #d9645f;
+  --palette-rose-rgb: 217, 100, 95;
 
   --palette-red: #ff6b6b;
   --palette-red-rgb: 255, 107, 107;
