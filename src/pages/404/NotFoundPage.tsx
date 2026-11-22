@@ -1,3 +1,5 @@
+// Style
+import "./NotFoundPage.css";
 // Routes
 import { ROUTES } from "@/app/routes";
 // Hooks
@@ -5,7 +7,7 @@ import { useDocumentTitle } from "@/hooks";
 // Components
 import { Button } from "@/components";
 
-export default function NotFound() {
+export default function NotFoundPage() {
   useDocumentTitle("Not found");
 
   return (

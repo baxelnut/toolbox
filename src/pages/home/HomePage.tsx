@@ -1,3 +1,5 @@
+// Style
+import "./HomePage.css";
 // Hooks
 import { useDocumentTitle } from "@/hooks";
 // Components
@@ -5,7 +7,7 @@ import { Button, Card } from "@/components";
 // Data
 import { TOOLS } from "@/data/tools";
 
-export default function Home() {
+export default function HomePage() {
   useDocumentTitle();
 
   return (

@@ -1,7 +1,9 @@
+// Style
+import "./QRPage.css";
 // Components
 import { ToolPage } from "@/components";
 
-export default function Qr() {
+export default function QRPage() {
   // TODO: build the QR generator (types, colors, logo, PNG and SVG download)
   return (
     <ToolPage toolId="qr">

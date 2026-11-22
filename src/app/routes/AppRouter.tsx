@@ -27,15 +27,21 @@ const router = createBrowserRouter([
     Component: AppShell,
     HydrateFallback,
     children: [
-      { index: true, lazy: page(() => import("@/pages/Home")) },
-      { path: ROUTES.qr, lazy: page(() => import("@/pages/Qr")) },
-      { path: ROUTES.invoice, lazy: page(() => import("@/pages/Invoice")) },
-      { path: ROUTES.proposal, lazy: page(() => import("@/pages/Proposal")) },
+      { index: true, lazy: page(() => import("@/pages/home/HomePage")) },
+      { path: ROUTES.qr, lazy: page(() => import("@/pages/qr/QRPage")) },
+      {
+        path: ROUTES.invoice,
+        lazy: page(() => import("@/pages/invoice/InvoicePage")),
+      },
+      {
+        path: ROUTES.proposal,
+        lazy: page(() => import("@/pages/proposal/ProposalPage")),
+      },
       {
         path: ROUTES.background,
-        lazy: page(() => import("@/pages/Background")),
+        lazy: page(() => import("@/pages/bg-remover/BGRemoverPage")),
       },
-      { path: "*", lazy: page(() => import("@/pages/NotFound")) },
+      { path: "*", lazy: page(() => import("@/pages/404/NotFoundPage")) },
     ],
   },
 ]);
