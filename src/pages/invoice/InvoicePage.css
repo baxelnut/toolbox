@@ -1,0 +1,96 @@
+.invoice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.invoice__form,
+.invoice__preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.invoice__form > *,
+.invoice__preview > * {
+  flex: none;
+}
+
+.invoice__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.invoice__issues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0;
+  list-style: none;
+  color: var(--clr-warning);
+  font-size: var(--font-size-xs);
+}
+
+.invoice-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  .invoice {
+    display: grid;
+    grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+    height: 100%;
+  }
+
+  .invoice__form,
+  .invoice__preview {
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: var(--space-2);
+  }
+
+  .invoice__bar {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-above);
+    padding-bottom: var(--space-2);
+    background: var(--clr-canvas);
+  }
+}
+
+#print-root {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  body > #root {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block;
+  }
+
+  #print-root .inv-sheet {
+    width: 210mm;
+    min-height: 296mm;
+  }
+}

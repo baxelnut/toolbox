@@ -1,0 +1,23 @@
+.sheet-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sheet-preview__frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  outline: 1px solid var(--clr-border-strong);
+}
+
+.sheet-preview__scaler {
+  width: 794px;
+  transform-origin: top left;
+}
+
+.sheet-preview__warning {
+  color: var(--clr-warning);
+  font-size: var(--font-size-xs);
+}
