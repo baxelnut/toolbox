@@ -19,7 +19,7 @@ export function ToolPage({ toolId, children }: ToolPageProps) {
         <h1 className="page-title">{tool.title}</h1>
         <div className="section">
           <p className="lede">{tool.description}</p>
-          {children}
+          <div className="scroll-area">{children}</div>
         </div>
       </div>
     </main>

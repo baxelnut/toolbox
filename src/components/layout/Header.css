@@ -1,11 +1,11 @@
 .header {
-  position: sticky;
-  top: 0;
+  position: relative;
+  flex: none;
   z-index: var(--z-nav);
   height: var(--header-h);
-  background: color-mix(in srgb, var(--clr-canvas) 88%, transparent);
+  background: var(--clr-canvas);
   border-bottom: 1px solid var(--clr-border);
-  backdrop-filter: blur(8px);
+  padding-inline: var(--page-pad);
 }
 
 .header__inner {
@@ -15,7 +15,6 @@
   height: 100%;
   max-width: var(--content-max);
   margin-inline: auto;
-  /* padding-inline: var(--page-pad); */
 }
 
 .header__brand {
@@ -29,7 +28,7 @@
 
 .header__nav {
   display: flex;
-  gap: var(--space-1);
+  gap: var(--space-3);
   margin-left: auto;
   overflow-x: auto;
   scrollbar-width: none;

@@ -18,7 +18,7 @@ export function AppShell() {
   const navigation = useNavigation();
 
   return (
-    <>
+    <div className="app">
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -28,6 +28,6 @@ export function AppShell() {
       <Header brand={SITE.name} links={NAV_LINKS} />
       <Outlet />
       <Footer owner={SITE.owner} ownerUrl={SITE.ownerUrl} />
-    </>
+    </div>
   );
 }

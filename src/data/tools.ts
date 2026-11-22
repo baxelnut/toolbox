@@ -35,8 +35,8 @@ export const TOOLS: readonly Tool[] = [
   {
     id: "background",
     path: ROUTES.background,
-    title: "Background Remover",
-    navLabel: "BG",
+    title: "BG Remover",
+    navLabel: "BG Remover",
     description: "Cut out backgrounds. Runs on your device.",
   },
 ];
