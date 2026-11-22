@@ -1,0 +1,23 @@
+.type-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.type-picker__tab {
+  min-height: 2.5rem;
+  border: 1px solid var(--clr-border-strong);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-default),
+    background-color var(--duration-fast) var(--ease-default);
+}
+
+.type-picker__tab:hover {
+  border-color: var(--clr-accent);
+}
+
+.type-picker__tab[aria-pressed="true"] {
+  border-color: var(--clr-accent-3);
+}

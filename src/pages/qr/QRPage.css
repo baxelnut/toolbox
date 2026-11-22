@@ -1,0 +1,39 @@
+.qr {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.qr__input,
+.qr__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .qr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    grid-template-areas:
+      "input result"
+      "style result";
+    align-items: start;
+    column-gap: var(--space-8);
+  }
+
+  .qr__input {
+    grid-area: input;
+  }
+
+  .qr__style {
+    grid-area: style;
+  }
+
+  .qr__result {
+    grid-area: result;
+    position: sticky;
+    top: 0;
+  }
+}
