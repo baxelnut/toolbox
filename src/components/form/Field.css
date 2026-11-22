@@ -1,0 +1,19 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.field__hint,
+.field__error {
+  font-size: var(--font-size-xs);
+}
+
+.field__hint {
+  color: var(--clr-ink-muted);
+}
+
+.field__error {
+  color: var(--clr-danger);
+}

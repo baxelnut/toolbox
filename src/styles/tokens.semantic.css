@@ -1,0 +1,112 @@
+:root {
+  --clr-canvas: var(--palette-forest-900);
+  --clr-surface: var(--palette-forest-850);
+  --clr-surface-raised: var(--palette-forest-800);
+  --clr-border: rgba(var(--palette-bone-100-rgb), 0.12);
+  --clr-border-strong: rgba(var(--palette-bone-100-rgb), 0.32);
+  --clr-field-border: var(--palette-sage-500);
+
+  --clr-band: var(--palette-forest-600);
+  --clr-band-deep: var(--palette-forest-700);
+  --clr-band-field: var(--palette-forest-500);
+  --clr-band-ink-muted: var(--palette-sage-300);
+  --clr-wordmark: var(--palette-forest-400);
+
+  --clr-ink: var(--palette-bone-100);
+  --clr-ink-soft: var(--palette-bone-200);
+  --clr-ink-muted: var(--palette-sage-400);
+  --clr-ink-faint: var(--palette-forest-400);
+
+  --clr-accent: var(--palette-orange);
+  --clr-accent-rgb: var(--palette-orange-rgb);
+  --clr-accent-2: var(--palette-teal);
+  --clr-accent-2-rgb: var(--palette-teal-rgb);
+  --clr-accent-3: var(--palette-coral);
+  --clr-accent-ink: var(--palette-forest-900);
+  --clr-focus: var(--palette-bone-100);
+
+  --clr-danger: var(--palette-red);
+  --clr-danger-soft: rgba(var(--palette-red-rgb), 0.14);
+  --clr-safe: var(--palette-green);
+  --clr-safe-soft: rgba(var(--palette-green-rgb), 0.14);
+  --clr-warning: var(--palette-amber);
+  --clr-warning-soft: rgba(var(--palette-amber-rgb), 0.14);
+
+  --clr-overlay: rgba(15, 19, 13, 0.8);
+
+  --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-control: var(--font-mono);
+
+  --font-size-xs: clamp(0.8125rem, 0.78rem + 0.1vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 0.84rem + 0.15vw, 0.9375rem);
+  --font-size-base: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --font-size-md: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  --font-size-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --font-size-xl: clamp(1.5rem, 1.25rem + 1.1vw, 2rem);
+  --font-size-2xl: clamp(2rem, 1.5rem + 2.2vw, 3rem);
+  --font-size-3xl: clamp(2.5rem, 1.8rem + 3.2vw, 4.25rem);
+  --font-size-statement: clamp(2rem, 1.1rem + 4.2vw, 5rem);
+  --font-size-hero: clamp(3.5rem, 1.5rem + 13vw, 12rem);
+
+  --leading-tight: 0.95;
+  --leading-snug: 1.1;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wider: 0.06em;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  --radius-none: 0;
+  --px-step: 0.5rem;
+
+  --header-h: 4.5rem;
+  --content-max: 80rem;
+  --measure: 62ch;
+  --page-pad: clamp(1rem, 4vw, 4rem);
+
+  --z-behind: -1;
+  --z-base: 0;
+  --z-above: 10;
+  --z-nav: 100;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-top: 500;
+
+  --hud-dash: rgba(var(--palette-bone-100-rgb), 0.16);
+  --hud-cross: var(--clr-accent);
+
+  --motion-scale: 1;
+  --duration-fast: calc(150ms * var(--motion-scale));
+  --duration-base: calc(200ms * var(--motion-scale));
+  --duration-slow: calc(350ms * var(--motion-scale));
+  --duration-slower: calc(500ms * var(--motion-scale));
+  --duration-slowest: calc(800ms * var(--motion-scale));
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+html[data-perf="lite"] {
+  --motion-scale: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  html[data-perf] {
+    --motion-scale: 0;
+  }
+}

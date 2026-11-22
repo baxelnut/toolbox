@@ -1,0 +1,11 @@
+.route-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-top);
+  height: 2px;
+  background: var(--clr-accent);
+  transform-origin: left;
+  animation: route-progress var(--duration-slowest) var(--ease-out) both;
+}

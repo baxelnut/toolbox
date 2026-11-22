@@ -1,0 +1,32 @@
+:root {
+  --palette-bone-50: #f4f4f2;
+  --palette-bone-100: #e8e8e8;
+  --palette-bone-100-rgb: 232, 232, 232;
+  --palette-bone-200: #c4cbc0;
+
+  --palette-sage-300: #b5bfb1;
+  --palette-sage-400: #9aa595;
+  --palette-sage-500: #7c8978;
+
+  --palette-forest-400: #4f594c;
+  --palette-forest-500: #394338;
+  --palette-forest-600: #343f2f;
+  --palette-forest-700: #293328;
+  --palette-forest-800: #212a1d;
+  --palette-forest-850: #1a2117;
+  --palette-forest-900: #141a12;
+  --palette-forest-950: #0f130d;
+
+  --palette-orange: #fb8d00;
+  --palette-orange-rgb: 251, 141, 0;
+  --palette-teal: #29a88b;
+  --palette-teal-rgb: 41, 168, 139;
+  --palette-coral: #fa793d;
+
+  --palette-red: #ff6b6b;
+  --palette-red-rgb: 255, 107, 107;
+  --palette-green: #4ade80;
+  --palette-green-rgb: 74, 222, 128;
+  --palette-amber: #fbbf24;
+  --palette-amber-rgb: 251, 191, 36;
+}

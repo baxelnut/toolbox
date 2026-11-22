@@ -1,0 +1,18 @@
+.toast-region {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-toast);
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--page-pad);
+  pointer-events: none;
+}
+
+.toast {
+  padding: var(--space-2) var(--space-4);
+  background: var(--clr-ink);
+  color: var(--clr-canvas);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}

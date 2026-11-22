@@ -1,0 +1,38 @@
+.control {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--clr-field-border);
+  border-radius: var(--radius-none);
+  background: var(--clr-canvas);
+  color: var(--clr-ink);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  transition: border-color var(--duration-fast) var(--ease-default);
+}
+
+.control::placeholder {
+  color: var(--clr-ink-muted);
+}
+
+.control:hover {
+  border-color: var(--clr-ink-muted);
+}
+
+.control:focus-visible {
+  border-color: var(--clr-accent);
+}
+
+.control[aria-invalid="true"] {
+  border-color: var(--clr-danger);
+}
+
+.control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control--multiline {
+  min-height: 7.5rem;
+  resize: vertical;
+}

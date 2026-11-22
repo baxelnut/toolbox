@@ -1,0 +1,114 @@
+.pixel-card {
+  --step: var(--px-step);
+  position: relative;
+  padding: var(--space-6);
+  background-color: var(--pixel-bg, var(--clr-surface-raised));
+  clip-path: polygon(
+    0 0,
+    calc(100% - 3 * var(--step)) 0,
+    calc(100% - 3 * var(--step)) var(--step),
+    calc(100% - 2 * var(--step)) var(--step),
+    calc(100% - 2 * var(--step)) calc(2 * var(--step)),
+    calc(100% - var(--step)) calc(2 * var(--step)),
+    calc(100% - var(--step)) calc(3 * var(--step)),
+    100% calc(3 * var(--step)),
+    100% 100%,
+    0 100%
+  );
+}
+
+.pixel-card--tl {
+  clip-path: polygon(
+    calc(3 * var(--step)) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 calc(3 * var(--step)),
+    var(--step) calc(3 * var(--step)),
+    var(--step) calc(2 * var(--step)),
+    calc(2 * var(--step)) calc(2 * var(--step)),
+    calc(2 * var(--step)) var(--step),
+    calc(3 * var(--step)) var(--step)
+  );
+}
+
+.pixel-card--bl {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    calc(3 * var(--step)) 100%,
+    calc(3 * var(--step)) calc(100% - var(--step)),
+    calc(2 * var(--step)) calc(100% - var(--step)),
+    calc(2 * var(--step)) calc(100% - 2 * var(--step)),
+    var(--step) calc(100% - 2 * var(--step)),
+    var(--step) calc(100% - 3 * var(--step)),
+    0 calc(100% - 3 * var(--step))
+  );
+}
+
+.guides {
+  --guide-x: max(var(--page-pad), calc((100vw - var(--content-max)) / 2));
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .guides::before,
+  .guides::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--hud-dash) 0 6px,
+      transparent 6px 12px
+    );
+  }
+  .guides::before {
+    left: calc(var(--guide-x) - var(--space-6));
+  }
+  .guides::after {
+    right: calc(var(--guide-x) - var(--space-6));
+  }
+}
+
+.guide-rule {
+  --guide-x: max(var(--page-pad), calc((100vw - var(--content-max)) / 2));
+  position: relative;
+  width: 100vw;
+  height: 0;
+  margin-inline: calc(50% - 50vw);
+  border-top: 1px dashed var(--hud-dash);
+  pointer-events: none;
+}
+
+.guide-rule::before,
+.guide-rule::after {
+  content: "";
+  position: absolute;
+  top: -0.5rem;
+  width: 1rem;
+  height: 1rem;
+  background:
+    linear-gradient(var(--hud-cross), var(--hud-cross)) center / 100% 1px
+      no-repeat,
+    linear-gradient(var(--hud-cross), var(--hud-cross)) center / 1px 100%
+      no-repeat;
+}
+
+.guide-rule::before {
+  left: calc(var(--guide-x) - var(--space-6) - 0.5rem);
+}
+.guide-rule::after {
+  right: calc(var(--guide-x) - var(--space-6) - 0.5rem);
+}
+
+@media (max-width: 767px) {
+  .guide-rule::before,
+  .guide-rule::after {
+    display: none;
+  }
+}

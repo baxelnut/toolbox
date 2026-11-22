@@ -1,0 +1,23 @@
+.select {
+  position: relative;
+}
+
+.select__input {
+  appearance: none;
+  padding-right: var(--space-10);
+  cursor: pointer;
+}
+
+.select__input option {
+  background: var(--clr-surface);
+  color: var(--clr-ink);
+}
+
+.select__icon {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  transform: translateY(-50%);
+  color: var(--clr-ink-muted);
+  pointer-events: none;
+}
