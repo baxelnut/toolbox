@@ -8,4 +8,5 @@ export default defineConfig({
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
   build: { target: "es2022", sourcemap: false },
+  optimizeDeps: { exclude: ["@imgly/background-removal", "onnxruntime-web"] },
 });
