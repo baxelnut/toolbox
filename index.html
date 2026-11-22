@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#141a12" />
+
+    <title>Toolbox | Basilius Tengang</title>
+    <meta
+      name="description"
+      content="Browser tools by Basilius Tengang: QR code, invoice and proposal generators, background remover. Everything runs on your device."
+    />
+    <meta name="author" content="Basilius Tengang" />
+    <!-- TODO: change to "index, follow" if you want this public in search -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://toolbox.basiliustengang.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Toolbox" />
+    <meta property="og:title" content="Toolbox | Basilius Tengang" />
+    <meta
+      property="og:description"
+      content="QR code, invoice and proposal generators, background remover. Runs on your device."
+    />
+    <meta property="og:url" content="https://toolbox.basiliustengang.com/" />
+    <!-- TODO: add og:image once you have a 1200x630 image -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/src/assets/logo/logo-light-32x32.png"
+      media="(prefers-color-scheme: dark)"
+      data-for="dark"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/src/assets/logo/logo-dark-32x32.png"
+      media="(prefers-color-scheme: light)"
+      data-for="light"
+    />
+    <script>
+      (function () {
+        var links = Array.prototype.slice.call(
+          document.querySelectorAll("link[data-for]"),
+        );
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        function sync() {
+          var scheme = mq.matches ? "dark" : "light";
+          links.forEach(function (link) {
+            var active = link.getAttribute("data-for") === scheme;
+            if (active && !link.isConnected) document.head.appendChild(link);
+            if (!active && link.isConnected) link.remove();
+          });
+        }
+        sync();
+        mq.addEventListener("change", sync);
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Space+Mono:wght@400;700&family=Syne:wght@400..800&family=VT323&display=swap"
+    />
+  </head>
+  <body>
+    <noscript>Toolbox needs JavaScript to run.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
