@@ -4,10 +4,10 @@ import "./InvoicePage.css";
 // Hooks
 import { useInvoice } from "@/hooks";
 // Components
-import { Button, ToolPage } from "@/components";
+import { Button, ToolPage, SheetPreview } from "@/components";
 import { ClientSection, DocumentSection, InvoiceSheet } from "./_components";
 import { ItemsSection, PrintRoot, ProfileSection } from "./_components";
-import { SheetPreview, TextSection, TotalsSection } from "./_components";
+import { TextSection, TotalsSection } from "./_components";
 // Utils
 import { buildDocument, safeFilename } from "@/lib/invoice";
 

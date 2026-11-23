@@ -21,7 +21,3 @@
   color: var(--clr-warning);
   font-size: var(--font-size-xs);
 }
-
-.sheet-preview__note {
-  font-size: var(--font-size-xs);
-}

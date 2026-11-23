@@ -3,25 +3,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import "./SheetPreview.css";
 
 const SHEET_WIDTH = 794;
-const A4_HEIGHT = 1123;
+const SHEET_HEIGHT = 1123;
 
-type SheetPreviewProps = {
-  children: ReactNode;
-  multiPage?: boolean;
-  pageContentHeight?: number;
-  chromeHeight?: number;
-};
-
-export function SheetPreview({
-  children,
-  multiPage = false,
-  pageContentHeight = A4_HEIGHT,
-  chromeHeight = 0,
-}: SheetPreviewProps) {
+export function SheetPreview({ children }: { children: ReactNode }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const scalerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
-  const [height, setHeight] = useState(A4_HEIGHT);
+  const [height, setHeight] = useState(SHEET_HEIGHT);
 
   useEffect(() => {
     const frame = frameRef.current;
@@ -40,22 +28,12 @@ export function SheetPreview({
     return () => observer.disconnect();
   }, []);
 
-  const pages = Math.max(
-    1,
-    Math.ceil((height - chromeHeight - 2) / pageContentHeight),
-  );
-
   return (
     <div className="sheet-preview">
-      {!multiPage && pages > 1 && (
+      {height > SHEET_HEIGHT + 2 && (
         <p className="sheet-preview__warning" role="status">
           The content is longer than one A4 page. Shorten it or the PDF runs
           onto a second page.
-        </p>
-      )}
-      {multiPage && pages > 1 && (
-        <p className="sheet-preview__note muted" role="status">
-          About {pages} A4 pages when printed. Page breaks may shift slightly.
         </p>
       )}
       <div

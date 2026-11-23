@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 // Style
 import "./ProposalPage.css";
 // Contexts & Hooks
@@ -50,6 +50,15 @@ export default function ProposalPage() {
 
   const busy = printing || wording || layout === null;
 
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.pageScroll = "";
+
+    return () => {
+      delete root.dataset.pageScroll;
+    };
+  }, []);
+
   return (
     <ToolPage toolId="proposal">
       <div className="proposal">
@@ -97,7 +106,7 @@ export default function ProposalPage() {
             </ul>
           )}
 
-          <SheetPreview multiPage pageContentHeight={1136} chromeHeight={0}>
+          <SheetPreview>
             {layout ? <ProposalPaper doc={doc} layout={layout} /> : null}
           </SheetPreview>
         </div>

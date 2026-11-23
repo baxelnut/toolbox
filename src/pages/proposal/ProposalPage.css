@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: var(--space-8);
   width: 100%;
+  min-width: 0;
 }
 
 .proposal__form,
@@ -23,13 +24,19 @@
     display: grid;
     grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
     height: 100%;
+    min-width: 0;
   }
 
   .proposal__form,
   .proposal__preview {
     min-height: 0;
-    overflow-y: auto;
+    overflow: auto;
     padding-right: var(--space-2);
+  }
+
+  .proposal__preview {
+    min-width: 0;
+    overscroll-behavior: contain;
   }
 
   .proposal__bar {
