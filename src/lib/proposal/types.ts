@@ -1,29 +1,35 @@
-import type { Adjustment, Block, MetaField } from "@/lib/invoice/types";
+import type { NumberFormat } from "@/lib/invoice/types";
 
-export type ProposalTemplateId = "build" | "retainer" | "blank";
+export type ProposalTemplateId = "full" | "short" | "blank";
 
-export type Phase = {
+export type BlockType =
+  | "paragraph"
+  | "subheading"
+  | "caption"
+  | "bullets"
+  | "numbered"
+  | "note"
+  | "table"
+  | "cost"
+  | "payment"
+  | "compare";
+
+export type Block = {
   id: string;
-  title: string;
-  duration: string;
-  description: string;
-};
-
-export type PriceItem = {
-  id: string;
-  title: string;
-  description: string;
-  amount: number;
-};
-
-export type PayStep = {
-  id: string;
+  type: BlockType;
+  body: string;
   label: string;
-  percent: number;
-  note: string;
+  body2: string;
+  label2: string;
+  counted: boolean;
 };
 
-export type ProposalSettings = { numberPattern: string };
+export type Section = { id: string; title: string; blocks: Block[] };
+
+export type ProposalSettings = {
+  numberPattern: string;
+  amountStyle: NumberFormat;
+};
 
 export type ProposalDraft = {
   templateId: ProposalTemplateId;
@@ -31,33 +37,29 @@ export type ProposalDraft = {
   numberOverride: string;
   printed: boolean;
   issueDate: string;
-  validDays: number;
+  showNumber: boolean;
+  showToc: boolean;
+  coverTitle: string;
   clientName: string;
-  clientAddress: string;
-  subtitle: string;
-  projectTitle: string;
-  meta: MetaField[];
-  summary: string;
-  blocks: Block[];
-  phases: Phase[];
-  items: PriceItem[];
-  adjustments: Adjustment[];
-  payments: PayStep[];
-  terms: string;
-  closing: string;
+  clientUnit: string;
+  coverLogo: string;
+  projectName: string;
+  providerRole: string;
+  headerText: string;
+  leftLabel: string;
+  rightLabel: string;
+  approverName: string;
+  approverRole: string;
+  sections: Section[];
 };
 
 export type ProposalContent = Pick<
   ProposalDraft,
-  | "validDays"
-  | "subtitle"
-  | "meta"
-  | "summary"
-  | "blocks"
-  | "phases"
-  | "items"
-  | "adjustments"
-  | "payments"
-  | "terms"
-  | "closing"
+  | "coverTitle"
+  | "headerText"
+  | "providerRole"
+  | "showToc"
+  | "leftLabel"
+  | "rightLabel"
+  | "sections"
 >;

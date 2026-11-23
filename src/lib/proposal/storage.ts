@@ -3,9 +3,9 @@ import type { Counters } from "@/lib/invoice/types";
 import type { ProposalDraft, ProposalSettings } from "./types";
 
 const KEYS = {
-  draft: "toolbox:proposal:draft:v1",
+  draft: "toolbox:proposal:draft:v2",
   counters: "toolbox:proposal:counters:v1",
-  settings: "toolbox:proposal:settings:v1",
+  settings: "toolbox:proposal:settings:v2",
 } as const;
 
 function read(key: string): unknown {
@@ -35,15 +35,10 @@ function isDraft(value: unknown): value is ProposalDraft {
     isRecord(value) &&
     typeof value.templateId === "string" &&
     typeof value.seq === "number" &&
-    typeof value.validDays === "number" &&
+    typeof value.coverTitle === "string" &&
     typeof value.issueDate === "string" &&
     isIsoDate(value.issueDate) &&
-    Array.isArray(value.meta) &&
-    Array.isArray(value.blocks) &&
-    Array.isArray(value.phases) &&
-    Array.isArray(value.items) &&
-    Array.isArray(value.adjustments) &&
-    Array.isArray(value.payments)
+    Array.isArray(value.sections)
   );
 }
 
@@ -71,6 +66,7 @@ export function loadSettings(fallback: ProposalSettings): ProposalSettings {
       typeof raw.numberPattern === "string"
         ? raw.numberPattern
         : fallback.numberPattern,
+    amountStyle: raw.amountStyle === "comma" ? "comma" : "dot",
   };
 }
 

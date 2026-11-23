@@ -4,17 +4,9 @@ import {
   DEFAULT_PROPOSAL_SETTINGS,
   INITIAL_PROPOSAL_COUNTERS,
 } from "@/data/proposal";
-import { addDays, diffDays, isIsoDate } from "@/lib/invoice/format";
+import { isIsoDate } from "@/lib/invoice/format";
 import { loadProfile, saveProfile } from "@/lib/invoice/storage";
-import { makeAdjustment, makeBlock, makeMeta } from "@/lib/invoice/templates";
-import type {
-  Adjustment,
-  Block,
-  Counters,
-  MetaField,
-  Profile,
-} from "@/lib/invoice/types";
-import { percentSum } from "@/lib/proposal/calc";
+import type { Counters, Profile } from "@/lib/invoice/types";
 import {
   loadCounters,
   loadDraft,
@@ -26,35 +18,32 @@ import {
 import {
   buildTemplate,
   createProposalDraft,
-  makePayStep,
-  makePhase,
-  makePriceItem,
+  makeBlock,
+  makeSection,
   nextProposalSequence,
 } from "@/lib/proposal/templates";
 import type {
-  PayStep,
-  Phase,
-  PriceItem,
+  Block,
+  BlockType,
   ProposalDraft,
   ProposalSettings,
   ProposalTemplateId,
+  Section,
 } from "@/lib/proposal/types";
 
-type RowUpdater<T> = (change: (rows: T[]) => T[]) => void;
-
-function rowOps<T extends { id: string }>(
-  update: RowUpdater<T>,
-  create: () => T,
-) {
-  return {
-    add: () => update((rows) => [...rows, create()]),
-    update: (id: string, patch: Partial<T>) =>
-      update((rows) =>
-        rows.map((row) => (row.id === id ? { ...row, ...patch } : row)),
-      ),
-    remove: (id: string) =>
-      update((rows) => rows.filter((row) => row.id !== id)),
-  };
+function moveRow<T extends { id: string }>(
+  rows: T[],
+  id: string,
+  step: -1 | 1,
+): T[] {
+  const index = rows.findIndex((row) => row.id === id);
+  const current = rows[index];
+  const other = rows[index + step];
+  if (index < 0 || !current || !other) return rows;
+  const next = [...rows];
+  next[index] = other;
+  next[index + step] = current;
+  return next;
 }
 
 export function useProposal() {
@@ -62,7 +51,7 @@ export function useProposal() {
     const counters = loadCounters(INITIAL_PROPOSAL_COUNTERS);
     return {
       counters,
-      draft: loadDraft() ?? createProposalDraft("build", counters),
+      draft: loadDraft() ?? createProposalDraft("full", counters),
     };
   });
   const [draft, setDraft] = useState<ProposalDraft>(boot.draft);
@@ -75,7 +64,8 @@ export function useProposal() {
   );
 
   useEffect(() => {
-    saveDraft(draft);
+    const timer = window.setTimeout(() => saveDraft(draft), 400);
+    return () => window.clearTimeout(timer);
   }, [draft]);
 
   useEffect(() => {
@@ -93,7 +83,6 @@ export function useProposal() {
   const year = draft.issueDate.slice(0, 4);
   const lastIssued = counters[year] ?? 0;
   const nextFree = lastIssued + 1;
-  const validUntil = addDays(draft.issueDate, draft.validDays);
 
   const set = <K extends keyof ProposalDraft>(
     key: K,
@@ -105,8 +94,10 @@ export function useProposal() {
     value: Profile[K],
   ) => setProfile((prev) => ({ ...prev, [key]: value }));
 
-  const setNumberPattern = (value: string) =>
-    setSettings((prev) => ({ ...prev, numberPattern: value }));
+  const setSetting = <K extends keyof ProposalSettings>(
+    key: K,
+    value: ProposalSettings[K],
+  ) => setSettings((prev) => ({ ...prev, [key]: value }));
 
   const setIssueDate = (value: string) => {
     if (!isIsoDate(value)) return;
@@ -118,11 +109,6 @@ export function useProposal() {
         seq: yearChanged ? nextProposalSequence(counters, value) : prev.seq,
       };
     });
-  };
-
-  const setValidUntil = (value: string) => {
-    if (!isIsoDate(value)) return;
-    set("validDays", Math.max(0, diffDays(draft.issueDate, value)));
   };
 
   const applyTemplate = (id: ProposalTemplateId) =>
@@ -139,16 +125,20 @@ export function useProposal() {
     setDraft(createProposalDraft(draft.templateId, next));
   };
 
-  const issues: string[] = [];
-  if (!profile.name.trim()) issues.push("Add your name under Your details.");
-  if (!draft.clientName.trim()) issues.push("Add the client name.");
-  if (!draft.items.some((item) => item.amount !== 0)) {
-    issues.push("Add a price to at least one item.");
-  }
-  if (draft.payments.length > 0) {
-    const sum = percentSum(draft.payments);
-    if (sum !== 100) issues.push(`Payment steps add up to ${sum}%, not 100%.`);
-  }
+  const changeSections = (change: (rows: Section[]) => Section[]) =>
+    setDraft((prev) => ({ ...prev, sections: change(prev.sections) }));
+
+  const changeBlocks = (
+    sectionId: string,
+    change: (rows: Block[]) => Block[],
+  ) =>
+    changeSections((rows) =>
+      rows.map((section) =>
+        section.id === sectionId
+          ? { ...section, blocks: change(section.blocks) }
+          : section,
+      ),
+    );
 
   return {
     draft,
@@ -156,47 +146,36 @@ export function useProposal() {
     settings,
     lastIssued,
     nextFree,
-    validUntil,
-    issues,
     set,
     setProfileField,
-    setNumberPattern,
+    setSetting,
     setIssueDate,
-    setValidUntil,
     applyTemplate,
     markPrinted,
     newProposal,
-    meta: rowOps<MetaField>(
-      (change) => setDraft((prev) => ({ ...prev, meta: change(prev.meta) })),
-      makeMeta,
-    ),
-    blocks: rowOps<Block>(
-      (change) =>
-        setDraft((prev) => ({ ...prev, blocks: change(prev.blocks) })),
-      makeBlock,
-    ),
-    phases: rowOps<Phase>(
-      (change) =>
-        setDraft((prev) => ({ ...prev, phases: change(prev.phases) })),
-      makePhase,
-    ),
-    items: rowOps<PriceItem>(
-      (change) => setDraft((prev) => ({ ...prev, items: change(prev.items) })),
-      makePriceItem,
-    ),
-    adjustments: rowOps<Adjustment>(
-      (change) =>
-        setDraft((prev) => ({
-          ...prev,
-          adjustments: change(prev.adjustments),
-        })),
-      makeAdjustment,
-    ),
-    payments: rowOps<PayStep>(
-      (change) =>
-        setDraft((prev) => ({ ...prev, payments: change(prev.payments) })),
-      makePayStep,
-    ),
+    sections: {
+      add: () => changeSections((rows) => [...rows, makeSection("")]),
+      rename: (id: string, title: string) =>
+        changeSections((rows) =>
+          rows.map((row) => (row.id === id ? { ...row, title } : row)),
+        ),
+      remove: (id: string) =>
+        changeSections((rows) => rows.filter((row) => row.id !== id)),
+      move: (id: string, step: -1 | 1) =>
+        changeSections((rows) => moveRow(rows, id, step)),
+    },
+    blocks: {
+      add: (sectionId: string, type: BlockType) =>
+        changeBlocks(sectionId, (rows) => [...rows, makeBlock(type)]),
+      update: (sectionId: string, id: string, patch: Partial<Block>) =>
+        changeBlocks(sectionId, (rows) =>
+          rows.map((row) => (row.id === id ? { ...row, ...patch } : row)),
+        ),
+      remove: (sectionId: string, id: string) =>
+        changeBlocks(sectionId, (rows) => rows.filter((row) => row.id !== id)),
+      move: (sectionId: string, id: string, step: -1 | 1) =>
+        changeBlocks(sectionId, (rows) => moveRow(rows, id, step)),
+    },
   };
 }
 

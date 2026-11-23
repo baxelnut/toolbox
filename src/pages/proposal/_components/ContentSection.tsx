@@ -1,94 +1,271 @@
+import { useState } from "react";
 // Hooks
 import type { ProposalController } from "@/hooks";
 // Components
-import { Button, Disclosure, ListRow } from "@/components";
-import { Select, TextInput, Textarea } from "@/components";
+import { Button, Checkbox, Disclosure } from "@/components";
+import { ListRow, Select, TextInput, Textarea } from "@/components";
 // Utils
 import { pickOption } from "@/lib/qr";
-import { KIND_OPTIONS, WIDTH_OPTIONS, type BlockKind } from "@/lib/invoice";
+import { BLOCK_HINTS, BLOCK_OPTIONS, roman } from "@/lib/proposal";
+import type { Block, BlockType, Section } from "@/lib/proposal";
 
-const BODY_HINT: Record<BlockKind, string> = {
-  checklist: "One item per line.",
-  text: "A plain paragraph.",
-  callout: "Lines starting with - become a list. Other lines are paragraphs.",
+type EditorProps = {
+  block: Block;
+  onChange: (patch: Partial<Block>) => void;
 };
 
-export function ContentSection({ proposal }: { proposal: ProposalController }) {
-  const { draft } = proposal;
+function Fields({ block, onChange }: EditorProps) {
+  const hint = BLOCK_HINTS[block.type];
+
+  switch (block.type) {
+    case "subheading":
+    case "caption":
+      return (
+        <TextInput
+          label="Text"
+          hint={hint}
+          value={block.body}
+          onChange={(event) => onChange({ body: event.target.value })}
+        />
+      );
+    case "table":
+      return (
+        <>
+          <Textarea
+            label="Rows"
+            hint={hint}
+            rows={6}
+            value={block.body}
+            onChange={(event) => onChange({ body: event.target.value })}
+          />
+          <TextInput
+            label="Column widths (optional)"
+            placeholder="30, 70"
+            hint="Percent per column. Leave empty to size automatically."
+            value={block.label}
+            onChange={(event) => onChange({ label: event.target.value })}
+          />
+        </>
+      );
+    case "cost":
+      return (
+        <>
+          <Textarea
+            label="Items"
+            hint={hint}
+            rows={6}
+            value={block.body}
+            onChange={(event) => onChange({ body: event.target.value })}
+          />
+          <TextInput
+            label="Subtotal label"
+            placeholder="Subtotal A"
+            value={block.label}
+            onChange={(event) => onChange({ label: event.target.value })}
+          />
+          <Checkbox
+            label="Counts toward total investment"
+            checked={block.counted}
+            onChange={(event) => onChange({ counted: event.target.checked })}
+          />
+        </>
+      );
+    case "payment":
+      return (
+        <>
+          <Textarea
+            label="Steps"
+            hint={hint}
+            rows={4}
+            value={block.body}
+            onChange={(event) => onChange({ body: event.target.value })}
+          />
+          <TextInput
+            label="Total label"
+            placeholder="Total Investasi"
+            value={block.label}
+            onChange={(event) => onChange({ label: event.target.value })}
+          />
+        </>
+      );
+    case "compare":
+      return (
+        <>
+          <TextInput
+            label="Left title"
+            value={block.label}
+            onChange={(event) => onChange({ label: event.target.value })}
+          />
+          <Textarea
+            label="Left items"
+            hint={hint}
+            rows={4}
+            value={block.body}
+            onChange={(event) => onChange({ body: event.target.value })}
+          />
+          <TextInput
+            label="Right title"
+            value={block.label2}
+            onChange={(event) => onChange({ label2: event.target.value })}
+          />
+          <Textarea
+            label="Right items"
+            rows={4}
+            value={block.body2}
+            onChange={(event) => onChange({ body2: event.target.value })}
+          />
+        </>
+      );
+    default:
+      return (
+        <Textarea
+          label="Content"
+          hint={hint}
+          rows={block.type === "paragraph" ? 6 : 4}
+          value={block.body}
+          onChange={(event) => onChange({ body: event.target.value })}
+        />
+      );
+  }
+}
+
+function AddBlock({ onAdd }: { onAdd: (type: BlockType) => void }) {
+  const [type, setType] = useState<BlockType>("paragraph");
 
   return (
-    <>
-      <Disclosure title="Summary and sections" defaultOpen>
-        <Textarea
-          label="Summary"
-          rows={4}
-          value={draft.summary}
-          onChange={(event) => proposal.set("summary", event.target.value)}
-        />
-        {draft.blocks.map((block, index) => (
-          <ListRow
-            key={block.id}
-            title={block.title || `Section ${index + 1}`}
-            onRemove={() => proposal.blocks.remove(block.id)}
-          >
-            <TextInput
-              label="Title"
-              value={block.title}
-              onChange={(event) =>
-                proposal.blocks.update(block.id, { title: event.target.value })
-              }
-            />
-            <div className="proposal-row">
-              <Select
-                label="Style"
-                options={KIND_OPTIONS}
-                value={block.kind}
-                onChange={(event) => {
-                  const next = pickOption(KIND_OPTIONS, event.target.value);
-                  if (next) proposal.blocks.update(block.id, { kind: next });
-                }}
-              />
-              <Select
-                label="Width"
-                options={WIDTH_OPTIONS}
-                value={block.width}
-                onChange={(event) => {
-                  const next = pickOption(WIDTH_OPTIONS, event.target.value);
-                  if (next) proposal.blocks.update(block.id, { width: next });
-                }}
-              />
-            </div>
-            <Textarea
-              label="Content"
-              hint={BODY_HINT[block.kind]}
-              rows={5}
-              value={block.body}
-              onChange={(event) =>
-                proposal.blocks.update(block.id, { body: event.target.value })
-              }
-            />
-          </ListRow>
-        ))}
-        <Button variant="outline" size="sm" onClick={proposal.blocks.add}>
-          Add section
-        </Button>
-      </Disclosure>
+    <div className="proposal-row">
+      <Select
+        label="New block"
+        options={BLOCK_OPTIONS}
+        value={type}
+        onChange={(event) => {
+          const next = pickOption(BLOCK_OPTIONS, event.target.value);
+          if (next) setType(next);
+        }}
+      />
+      <Button variant="outline" size="sm" onClick={() => onAdd(type)}>
+        Add block
+      </Button>
+    </div>
+  );
+}
 
-      <Disclosure title="Terms and closing">
-        <Textarea
-          label="Terms"
-          rows={5}
-          value={draft.terms}
-          onChange={(event) => proposal.set("terms", event.target.value)}
+type SectionEditorProps = {
+  section: Section;
+  index: number;
+  last: boolean;
+  proposal: ProposalController;
+};
+
+function SectionEditor({ section, index, last, proposal }: SectionEditorProps) {
+  return (
+    <Disclosure title={`${roman(index + 1)}. ${section.title || "Untitled"}`}>
+      <TextInput
+        label="Section title"
+        value={section.title}
+        onChange={(event) =>
+          proposal.sections.rename(section.id, event.target.value)
+        }
+      />
+      <div className="proposal-actions">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={index === 0}
+          onClick={() => proposal.sections.move(section.id, -1)}
+        >
+          Move up
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={last}
+          onClick={() => proposal.sections.move(section.id, 1)}
+        >
+          Move down
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          icon="close"
+          onClick={() => {
+            if (window.confirm("Remove this section and its blocks?")) {
+              proposal.sections.remove(section.id);
+            }
+          }}
+        >
+          Remove section
+        </Button>
+      </div>
+
+      {section.blocks.map((block, blockIndex) => (
+        <ListRow
+          key={block.id}
+          title={
+            BLOCK_OPTIONS.find((option) => option.value === block.type)
+              ?.label ?? block.type
+          }
+          onRemove={() => proposal.blocks.remove(section.id, block.id)}
+        >
+          <div className="proposal-actions">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={blockIndex === 0}
+              onClick={() => proposal.blocks.move(section.id, block.id, -1)}
+            >
+              Up
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={blockIndex === section.blocks.length - 1}
+              onClick={() => proposal.blocks.move(section.id, block.id, 1)}
+            >
+              Down
+            </Button>
+          </div>
+          <Select
+            label="Type"
+            options={BLOCK_OPTIONS}
+            value={block.type}
+            onChange={(event) => {
+              const next = pickOption(BLOCK_OPTIONS, event.target.value);
+              if (next)
+                proposal.blocks.update(section.id, block.id, { type: next });
+            }}
+          />
+          <Fields
+            block={block}
+            onChange={(patch) =>
+              proposal.blocks.update(section.id, block.id, patch)
+            }
+          />
+        </ListRow>
+      ))}
+
+      <AddBlock onAdd={(type) => proposal.blocks.add(section.id, type)} />
+    </Disclosure>
+  );
+}
+
+export function ContentSection({ proposal }: { proposal: ProposalController }) {
+  const { sections } = proposal.draft;
+
+  return (
+    <Disclosure title="Sections" defaultOpen>
+      {sections.map((section, index) => (
+        <SectionEditor
+          key={section.id}
+          section={section}
+          index={index}
+          last={index === sections.length - 1}
+          proposal={proposal}
         />
-        <Textarea
-          label="Closing note"
-          hint="Shown above the signatures."
-          rows={3}
-          value={draft.closing}
-          onChange={(event) => proposal.set("closing", event.target.value)}
-        />
-      </Disclosure>
-    </>
+      ))}
+      <Button variant="outline" size="sm" onClick={proposal.sections.add}>
+        Add section
+      </Button>
+    </Disclosure>
   );
 }

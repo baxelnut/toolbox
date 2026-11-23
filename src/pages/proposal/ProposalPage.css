@@ -18,29 +18,6 @@
   flex: none;
 }
 
-.proposal__bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.proposal__issues {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: 0;
-  list-style: none;
-  color: var(--clr-warning);
-  font-size: var(--font-size-xs);
-}
-
-.proposal-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: var(--space-3);
-}
-
 @media (min-width: 1024px) {
   .proposal {
     display: grid;
@@ -64,10 +41,61 @@
   }
 }
 
+#print-root {
+  display: none;
+}
+
 @media print {
-  #print-root .prop-sheet {
-    width: auto;
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  body > #root {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block;
+  }
+}
+
+/* Mobile: let the whole page scroll instead of fitting the screen */
+@media (max-width: 1023px) {
+  html[data-page-scroll],
+  html[data-page-scroll] body,
+  html[data-page-scroll] .app {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  html[data-page-scroll] .page {
+    flex: 1 0 auto;
+    overflow: visible;
+  }
+
+  html[data-page-scroll] .page > .container,
+  html[data-page-scroll] .page-grid > .section,
+  html[data-page-scroll] .scroll-area {
+    flex: none;
+    height: auto;
     min-height: 0;
-    padding: 0;
+    overflow: visible;
+  }
+
+  html[data-page-scroll] .page-grid {
+    grid-template-rows: auto auto;
+  }
+
+  html[data-page-scroll] .proposal {
+    padding-bottom: var(--space-8);
   }
 }

@@ -1,19 +1,16 @@
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 // Style
 import "./ProposalPage.css";
 // Contexts & Hooks
 import { useToast } from "@/contexts";
-import { useProposal } from "@/hooks";
+import { useProposal, useProposalLayout } from "@/hooks";
 // Components
 import { Button, PrintRoot, SheetPreview, ToolPage } from "@/components";
 import { ClientSection, ContentSection, DocumentSection } from "./_components";
-import { PricingSection, ProfileSection } from "./_components";
-import { ProposalSheet, TimelineSection } from "./_components";
+import { ProfileSection, ProposalMeasure, ProposalPaper } from "./_components";
 // Utils
 import { safeFilename, downloadBlob } from "@/lib";
 import { buildProposalDocument } from "@/lib/proposal";
-
-const PAGE_CSS = "@page { size: A4; margin: 15mm 15mm 18mm; }";
 
 export default function ProposalPage() {
   const proposal = useProposal();
@@ -21,7 +18,7 @@ export default function ProposalPage() {
   const [printing, setPrinting] = useState(false);
   const [wording, setWording] = useState(false);
 
-  const doc = useMemo(
+  const built = useMemo(
     () =>
       buildProposalDocument(
         proposal.draft,
@@ -30,16 +27,18 @@ export default function ProposalPage() {
       ),
     [proposal.draft, proposal.profile, proposal.settings],
   );
+  const doc = useDeferredValue(built);
+  const { atoms, setMeasured, layout } = useProposalLayout(doc);
 
   const fileTitle = safeFilename(
-    [doc.number, doc.client.name].filter(Boolean).join(" - "),
+    [built.number, built.cover.client].filter(Boolean).join(" - "),
   );
 
   const downloadWord = async () => {
     setWording(true);
     try {
       const { buildProposalDocx } = await import("@/lib/word/proposal");
-      downloadBlob(await buildProposalDocx(doc), `${fileTitle}.docx`);
+      downloadBlob(await buildProposalDocx(built), `${fileTitle}.docx`);
       proposal.markPrinted();
       toast("Downloaded");
     } catch {
@@ -49,7 +48,7 @@ export default function ProposalPage() {
     }
   };
 
-  const busy = printing || wording;
+  const busy = printing || wording || layout === null;
 
   return (
     <ToolPage toolId="proposal">
@@ -58,8 +57,6 @@ export default function ProposalPage() {
           <DocumentSection proposal={proposal} />
           <ClientSection proposal={proposal} />
           <ContentSection proposal={proposal} />
-          <TimelineSection proposal={proposal} />
-          <PricingSection proposal={proposal} />
           <ProfileSection proposal={proposal} />
         </div>
 
@@ -81,35 +78,42 @@ export default function ProposalPage() {
               Download Word
             </Button>
             <small>
-              PDF: pick "Save as PDF", paper A4, and untick "Headers and
-              footers". Word: simplified layout, edit freely.
+              {layout ? `${layout.totalPages} pages. ` : ""}
+              PDF: pick "Save as PDF" and paper A4. Word: the contents page
+              updates when you open the file.
             </small>
           </div>
 
-          {proposal.issues.length > 0 && (
+          {(built.issues.length > 0 || layout?.oversize) && (
             <ul className="proposal__issues">
-              {proposal.issues.map((issue) => (
+              {built.issues.map((issue) => (
                 <li key={issue}>{issue}</li>
               ))}
+              {layout?.oversize && (
+                <li>
+                  One block is taller than a page. Split it into smaller blocks.
+                </li>
+              )}
             </ul>
           )}
 
-          <SheetPreview multiPage pageContentHeight={998} chromeHeight={125}>
-            <ProposalSheet doc={doc} />
+          <SheetPreview multiPage pageContentHeight={1136} chromeHeight={0}>
+            {layout ? <ProposalPaper doc={doc} layout={layout} /> : null}
           </SheetPreview>
         </div>
       </div>
 
-      {printing && (
+      <ProposalMeasure atoms={atoms} onMeasured={setMeasured} />
+
+      {printing && layout && (
         <PrintRoot
           title={fileTitle}
-          pageCss={PAGE_CSS}
           onDone={() => {
             setPrinting(false);
             proposal.markPrinted();
           }}
         >
-          <ProposalSheet doc={doc} />
+          <ProposalPaper doc={doc} layout={layout} />
         </PrintRoot>
       )}
     </ToolPage>

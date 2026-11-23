@@ -1,13 +1,13 @@
 // Contexts & Hooks
-import type { ProposalController } from "@/hooks";
 import { useToast } from "@/contexts";
+import type { ProposalController } from "@/hooks";
 // Components
 import { Button, Disclosure, Select, TextInput } from "@/components";
 // Utils
-import { signatureFromFile, NUMBER_FORMAT_OPTIONS } from "@/lib/invoice";
+import { NUMBER_FORMAT_OPTIONS, signatureFromFile } from "@/lib/invoice";
 
 export function ProfileSection({ proposal }: { proposal: ProposalController }) {
-  const { profile, settings, setProfileField } = proposal;
+  const { profile, settings, setProfileField, setSetting } = proposal;
   const { toast } = useToast();
 
   const upload = async (file: File) => {
@@ -22,48 +22,15 @@ export function ProfileSection({ proposal }: { proposal: ProposalController }) {
 
   return (
     <Disclosure title="Your details">
-      <small className="muted">Shared with the Invoice tool.</small>
+      <small className="muted">
+        Name and signature are shared with the Invoice tool.
+      </small>
       <TextInput
-        label="Name"
-        value={profile.name}
-        onChange={(event) => setProfileField("name", event.target.value)}
+        label="Name on documents"
+        hint="Shown on the cover and the signature, for example Basilius Tengang, S.Kom."
+        value={profile.signerName}
+        onChange={(event) => setProfileField("signerName", event.target.value)}
       />
-      <div className="proposal-row">
-        <TextInput
-          label="Email"
-          type="email"
-          value={profile.email}
-          onChange={(event) => setProfileField("email", event.target.value)}
-        />
-        <TextInput
-          label="Phone"
-          type="tel"
-          value={profile.phone}
-          onChange={(event) => setProfileField("phone", event.target.value)}
-        />
-      </div>
-      <TextInput
-        label="Website"
-        value={profile.website}
-        onChange={(event) => setProfileField("website", event.target.value)}
-      />
-      <div className="proposal-row">
-        <TextInput
-          label="Signer name"
-          value={profile.signerName}
-          onChange={(event) =>
-            setProfileField("signerName", event.target.value)
-          }
-        />
-        <TextInput
-          label="Signer role"
-          value={profile.signerRole}
-          onChange={(event) =>
-            setProfileField("signerRole", event.target.value)
-          }
-        />
-      </div>
-
       <TextInput
         label="Signature image"
         type="file"
@@ -101,11 +68,12 @@ export function ProfileSection({ proposal }: { proposal: ProposalController }) {
         <Select
           label="Amount style"
           options={NUMBER_FORMAT_OPTIONS}
-          value={profile.numberFormat}
+          value={settings.amountStyle}
+          hint="Proposals only. Invoices keep their own style."
           onChange={(event) =>
-            setProfileField(
-              "numberFormat",
-              event.target.value === "dot" ? "dot" : "comma",
+            setSetting(
+              "amountStyle",
+              event.target.value === "comma" ? "comma" : "dot",
             )
           }
         />
@@ -114,7 +82,7 @@ export function ProfileSection({ proposal }: { proposal: ProposalController }) {
         label="Proposal number format"
         value={settings.numberPattern}
         hint="Tokens: {YYYY}, {MM}, {MMR} for the roman month, {SEQ}."
-        onChange={(event) => proposal.setNumberPattern(event.target.value)}
+        onChange={(event) => setSetting("numberPattern", event.target.value)}
       />
     </Disclosure>
   );

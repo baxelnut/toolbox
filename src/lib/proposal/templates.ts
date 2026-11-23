@@ -1,208 +1,321 @@
 import { todayIso, uid } from "@/lib/invoice/format";
-import { makeBlock, makeMeta } from "@/lib/invoice/templates";
 import type { Counters } from "@/lib/invoice/types";
 import type {
-  PayStep,
-  Phase,
-  PriceItem,
+  Block,
+  BlockType,
   ProposalContent,
   ProposalDraft,
   ProposalTemplateId,
+  Section,
 } from "./types";
 
-export function makePhase(patch: Partial<Phase> = {}): Phase {
-  return { id: uid(), title: "", duration: "", description: "", ...patch };
+export function makeBlock(type: BlockType, patch: Partial<Block> = {}): Block {
+  return {
+    id: uid(),
+    type,
+    body: "",
+    label: "",
+    body2: "",
+    label2: "",
+    counted: type === "cost",
+    ...patch,
+  };
 }
 
-export function makePriceItem(patch: Partial<PriceItem> = {}): PriceItem {
-  return { id: uid(), title: "", description: "", amount: 0, ...patch };
+export function makeSection(title = "", blocks: Block[] = []): Section {
+  return { id: uid(), title, blocks };
 }
 
-export function makePayStep(patch: Partial<PayStep> = {}): PayStep {
-  return { id: uid(), label: "", percent: 0, note: "", ...patch };
-}
+const b = (type: BlockType, body = "", patch: Partial<Block> = {}): Block =>
+  makeBlock(type, { body, ...patch });
+const s = makeSection;
 
-const BUILD_TERMS =
-  "Uang muka wajib dibayar sebelum pekerjaan dimulai. Pelunasan jatuh tempo dalam waktu 7 hari setelah proyek selesai. Kepemilikan hasil pekerjaan beralih ke klien hanya setelah pembayaran penuh. Proposal ini berlaku selama masa berlaku yang tertera dan menjadi dasar kontrak setelah disetujui kedua pihak.";
+const FULL = (): ProposalContent => ({
+  coverTitle:
+    "PROPOSAL TEKNIS DAN PENGAJUAN\nPENGEMBANGAN, PELUNCURAN, DAN PENGELOLAAN\n{project}",
+  headerText: "{client} | Proposal {project}",
+  providerRole: "Penyedia Jasa Pengembangan & Pengelolaan Sistem",
+  showToc: true,
+  leftLabel: "Diajukan oleh,",
+  rightLabel: "Mengetahui dan menyetujui,",
+  sections: [
+    s("Ringkasan Eksekutif", [
+      b(
+        "paragraph",
+        "Dokumen ini mengusulkan pembangunan {project} bagi {client}. Isinya mencakup latar belakang, ruang lingkup, solusi, jadwal, rencana anggaran biaya, dan ketentuan kerja sama.\n\nTujuan utamanya adalah menggantikan proses manual dengan sistem yang terukur, dapat diaudit, dan layak dipresentasikan kepada pimpinan serta mitra.",
+      ),
+      b(
+        "paragraph",
+        "Proposal ini mencakup tiga komponen: (1) investasi pengembangan satu kali hingga sistem siap diluncurkan, (2) biaya infrastruktur pihak ketiga yang menopang operasional, dan (3) layanan pemeliharaan berkelanjutan setelah peluncuran.",
+      ),
+      b("caption", "Ringkasan Investasi"),
+      b(
+        "table",
+        "Komponen | Nilai\nInvestasi pengembangan (satu kali) | {total}\nLayanan bulanan pascapeluncuran | Rp 0 / bulan\nLayanan tahunan pascapeluncuran | Rp 0 / tahun",
+        { label: "62, 38" },
+      ),
+      b(
+        "note",
+        "Catatan: Rincian lengkap masing-masing komponen dijabarkan pada bagian Rencana Anggaran Biaya dan Layanan Pemeliharaan.",
+      ),
+    ]),
+    s("Latar Belakang", [
+      b(
+        "paragraph",
+        "Koordinasi dan pengelolaan informasi di {client} selama ini berlangsung secara manual dan tersebar di berbagai kanal. Pola ini mulai menunjukkan keterbatasan: data tidak terpusat, dokumentasi sulit ditelusuri, dan citra kelembagaan belum sepenuhnya tercermin.\n\nSebagai tindak lanjut, {provider} mengajukan pengembangan {project} untuk menjawab kebutuhan tersebut secara terstruktur.",
+      ),
+    ]),
+    s("Tujuan Proposal", [
+      b(
+        "numbered",
+        "Memformalkan kesepakatan kerja antara penyedia jasa dan {client}.\nMenetapkan Rencana Anggaran Biaya (RAB) yang rinci, transparan, dan dapat dipertanggungjawabkan.\nMenetapkan struktur biaya operasional setelah peluncuran.\nMenjabarkan tanggung jawab, batasan pekerjaan, dan kepemilikan aset digital sejak awal.",
+      ),
+    ]),
+    s("Ruang Lingkup Pekerjaan", [
+      b("subheading", "Cakupan Pekerjaan"),
+      b(
+        "bullets",
+        "Komponen A | Deskripsi singkat cakupan komponen A.\nKomponen B | Deskripsi singkat cakupan komponen B.\nKomponen C | Deskripsi singkat cakupan komponen C.",
+      ),
+      b("subheading", "Di Luar Lingkup"),
+      b(
+        "bullets",
+        "Fitur atau modul di luar daftar cakupan\nAplikasi mobile native\nIntegrasi sistem pembayaran\nPerubahan besar pada desain setelah disetujui",
+      ),
+      b(
+        "note",
+        "Catatan: Butir di luar lingkup dapat diusulkan sebagai fase lanjutan setelah sistem utama berjalan stabil.",
+      ),
+    ]),
+    s("Solusi yang Ditawarkan", [
+      b(
+        "paragraph",
+        "Sistem yang ditawarkan menggantikan koordinasi manual dengan platform yang terukur dan dapat diaudit. Seluruh aktivitas penting tercatat dengan penanda waktu, sehingga perkembangan dapat dilaporkan sebagai data yang nyata dan bukan klaim kualitatif.",
+      ),
+    ]),
+    s("Fitur & Deliverables", [
+      b(
+        "table",
+        "Fitur | Deskripsi\nFitur utama 1 | Penjelasan singkat fitur utama 1.\nFitur utama 2 | Penjelasan singkat fitur utama 2.\nFitur utama 3 | Penjelasan singkat fitur utama 3.",
+        { label: "30, 70" },
+      ),
+    ]),
+    s("Teknologi & Infrastruktur", [
+      b(
+        "paragraph",
+        "Seluruh komponen memakai teknologi modern dan standar industri, dipilih untuk keandalan, keamanan data, dan kemudahan pemeliharaan jangka panjang.",
+      ),
+      b(
+        "table",
+        "Komponen | Teknologi\nFrontend | React + TypeScript\nBasis data & autentikasi | Supabase (PostgreSQL)\nHosting | Vercel\nDomain | Domain kustom",
+        { label: "35, 65" },
+      ),
+    ]),
+    s("Metodologi Pelaksanaan", [
+      b(
+        "numbered",
+        "Perencanaan | Analisis kebutuhan, arsitektur informasi, dan spesifikasi teknis.\nPengembangan | Perancangan antarmuka, pengembangan sistem, dan integrasi.\nPengujian & Quality Assurance | Pemeriksaan fungsional menyeluruh sebelum diakses publik.\nPeluncuran | Distribusi akses resmi beserta pendampingan pengguna awal.",
+      ),
+    ]),
+    s("Jadwal Waktu", [
+      b(
+        "table",
+        "Tahap | Estimasi Waktu | Kegiatan\nPersiapan | 1 minggu | Pengumpulan aset, teks resmi, dan data yang dibutuhkan.\nPengembangan | 2 sampai 3 minggu | Pembangunan dan integrasi sistem.\nPengujian & QA | 3 sampai 5 hari | Pengujian fungsional dan perbaikan akhir.\nPeluncuran | 2 sampai 3 hari | Pengujian go-live dan serah terima.",
+        { label: "22, 22, 56" },
+      ),
+      b(
+        "note",
+        "Catatan: Estimasi total 4 sampai 6 minggu sejak proposal disetujui dan seluruh konten diterima.",
+      ),
+    ]),
+    s("Rencana Anggaran Biaya (RAB) / Investasi Satu Kali", [
+      b(
+        "paragraph",
+        "Investasi satu kali ini mencakup seluruh pekerjaan hingga sistem siap dioperasikan dan diluncurkan.",
+      ),
+      b("subheading", "Rincian RAB Bagian A: Pengembangan"),
+      b(
+        "cost",
+        "Analisis kebutuhan dan spesifikasi teknis | 1 | Paket | 0\nPerancangan UI/UX | 1 | Paket | 0\nPengembangan frontend | 1 | Paket | 0\nPerancangan dan implementasi basis data | 1 | Paket | 0\nPengujian dan quality assurance | 1 | Paket | 0",
+        { label: "Subtotal A: Pengembangan", counted: true },
+      ),
+      b("subheading", "Rincian RAB Bagian B: Infrastruktur"),
+      b(
+        "cost",
+        "Registrasi domain (tahun ke-1) | 1 | Tahun | 0\nSetup DNS, SSL, dan environment produksi | 1 | Paket | 0",
+        { label: "Subtotal B: Infrastruktur", counted: true },
+      ),
+      b("subheading", "Skema Pembayaran"),
+      b(
+        "payment",
+        "Uang Muka (DP): saat kontrak ditandatangani | 40\nTermin Pengembangan: saat sistem inti siap diuji | 30\nPelunasan: saat peluncuran resmi | 30",
+        { label: "Total Investasi Pengembangan" },
+      ),
+    ]),
+    s("Layanan Pemeliharaan & Pengelolaan Bulanan", [
+      b(
+        "paragraph",
+        "Setelah peluncuran, organisasi memerlukan dukungan teknis atas sistem dan dukungan operasional atas konten sehari-hari. Layanan bulanan menggabungkan keduanya dalam satu paket terkelola.",
+      ),
+      b(
+        "table",
+        "Komponen Layanan Bulanan | Nilai\nDukungan administrasi dan pengelolaan konten | Rp 0\nLayanan pemeliharaan teknis | Rp 0\nInfrastruktur pihak ketiga (at cost) | Rp 0\nTotal | Rp 0 / bulan",
+        { label: "68, 32" },
+      ),
+      b(
+        "note",
+        "Catatan: Biaya infrastruktur pihak ketiga diteruskan tanpa markup dan dapat berbeda mengikuti kurs dan tingkat penggunaan.",
+      ),
+      b("subheading", "Cakupan Layanan Bulanan"),
+      b(
+        "compare",
+        "Perbaikan bug pada fitur yang telah diserahkan\nMonitoring uptime dan performa\nPembaruan keamanan rutin\nHingga 4 jam pekerjaan teknis ringan per bulan",
+        {
+          label: "Termasuk dalam Layanan Bulanan",
+          label2: "Tidak Termasuk (biaya terpisah)",
+          body2:
+            "Pengembangan fitur baru\nPerubahan besar pada struktur atau desain\nIntegrasi sistem pihak ketiga baru\nPekerjaan di luar 4 jam per bulan",
+        },
+      ),
+    ]),
+    s("Service Level & Dukungan", [
+      b(
+        "bullets",
+        "Isu non-kritis | Direspons dalam waktu maksimal 1x24 jam pada hari kerja.\nIsu kritis | Direspons dalam waktu maksimal 6 jam sejak dilaporkan.\nKanal komunikasi | WhatsApp dan/atau surel yang disepakati bersama.",
+      ),
+    ]),
+    s("Tanggung Jawab Para Pihak", [
+      b(
+        "compare",
+        "Menyediakan konten dan data tepat waktu\nMenugaskan satu narahubung\nMelakukan pembayaran sesuai skema yang disepakati",
+        {
+          label: "Tanggung Jawab Klien",
+          label2: "Tanggung Jawab Penyedia Jasa",
+          body2:
+            "Menyelesaikan pekerjaan sesuai lingkup dan jadwal\nMenjaga keamanan dan ketersediaan sistem\nMemberikan pelatihan penggunaan\nMelaporkan status layanan secara berkala",
+        },
+      ),
+    ]),
+    s("Asumsi & Batasan", [
+      b(
+        "numbered",
+        "Jadwal pembayaran mengikuti skema pada bagian Rencana Anggaran Biaya.\nKonten yang dibutuhkan disediakan oleh klien sesuai jadwal.\nEstimasi biaya pihak ketiga mengacu pada harga saat proposal disusun ({date}).\nPenghentian pekerjaan di tengah jalan diselesaikan berdasarkan proporsi pekerjaan yang telah diserahkan.",
+      ),
+    ]),
+    s("Ketentuan Pembayaran", [
+      b(
+        "paragraph",
+        "Skema pembayaran investasi pengembangan mengikuti bagian Skema Pembayaran. Layanan bulanan ditagihkan pada awal setiap periode, dengan bukti pembayaran berupa kuitansi yang ditandatangani kedua pihak.",
+      ),
+    ]),
+    s("Garansi & Dukungan Pasca-Peluncuran", [
+      b(
+        "paragraph",
+        "Penyedia jasa memberikan garansi perbaikan bug selama 30 (tiga puluh) hari kalender sejak peluncuran resmi, tanpa biaya tambahan, khusus untuk cacat pada fitur yang telah diserahkan sesuai lingkup.",
+      ),
+      b(
+        "compare",
+        "Bug atau kesalahan fungsi pada fitur yang diserahkan\nKetidaksesuaian hasil dengan lingkup yang disepakati",
+        {
+          label: "Termasuk dalam Garansi",
+          label2: "Tidak Termasuk dalam Garansi",
+          body2:
+            "Permintaan fitur baru\nPerubahan konten\nKegagalan layanan pihak ketiga",
+        },
+      ),
+    ]),
+    s("Kebijakan Permintaan Perubahan (Change Request)", [
+      b(
+        "paragraph",
+        "Permintaan di luar cakupan layanan bulanan akan diberikan penawaran biaya terpisah sebelum dikerjakan, dengan tarif indikatif Rp 0 per jam atau kuotasi tetap per tugas untuk pekerjaan berskala lebih besar.",
+      ),
+    ]),
+    s("Kepemilikan & Hak Kekayaan Intelektual", [
+      b(
+        "numbered",
+        "Source Code | Menjadi milik klien sepenuhnya setelah pelunasan investasi pengembangan.\nDomain | Didaftarkan atas nama klien sebagai pemilik terdaftar.\nBasis Data | Seluruh data adalah milik klien, ekspor data dapat diberikan kapan pun diminta.\nKonten | Seluruh konten yang diunggah tetap menjadi hak dan milik klien.",
+      ),
+    ]),
+    s("Syarat & Ketentuan Umum", [
+      b(
+        "numbered",
+        "Masa Berlaku | Kerja sama berlaku sejak proposal disetujui dan dapat diakhiri oleh salah satu pihak dengan pemberitahuan tertulis 30 hari sebelumnya.\nKerahasiaan | Data internal yang diakses selama pekerjaan tidak dibagikan kepada pihak ketiga tanpa izin.\nForce Majeure | Keterlambatan akibat gangguan di luar kendali wajar kedua pihak tidak dianggap wanprestasi.\nPenyelesaian Perselisihan | Perbedaan pendapat diselesaikan melalui musyawarah.",
+      ),
+    ]),
+    s("Penutup", [
+      b(
+        "paragraph",
+        "Proposal ini diajukan untuk memastikan pengembangan, peluncuran, dan pengelolaan {project} berjalan dengan kejelasan biaya, tanggung jawab, dan tata kelola sejak awal. Penyedia jasa menyatakan kesiapan untuk melanjutkan pekerjaan ini secara profesional dan bertanggung jawab penuh atas hasil yang dicapai.",
+      ),
+    ]),
+  ],
+});
 
-const CLOSING =
-  "Terima kasih atas kesempatan ini. Tanda tangan di bawah menandakan persetujuan atas lingkup, jadwal, dan biaya di atas.";
+const SHORT = (): ProposalContent => ({
+  coverTitle: "PROPOSAL PENAWARAN\n{project}",
+  headerText: "{client} | Proposal {project}",
+  providerRole: "Penyedia Jasa Pengembangan & Pengelolaan Sistem",
+  showToc: false,
+  leftLabel: "Diajukan oleh,",
+  rightLabel: "Mengetahui dan menyetujui,",
+  sections: [
+    s("Ringkasan", [
+      b(
+        "paragraph",
+        "Dokumen ini mengajukan penawaran pekerjaan {project} bagi {client}, mencakup ruang lingkup, jadwal, dan investasi.",
+      ),
+    ]),
+    s("Ruang Lingkup", [
+      b(
+        "bullets",
+        "Komponen A | Deskripsi singkat.\nKomponen B | Deskripsi singkat.",
+      ),
+    ]),
+    s("Jadwal", [
+      b(
+        "table",
+        "Tahap | Estimasi Waktu | Kegiatan\nPengembangan | 4 minggu | Pembangunan sistem.\nPeluncuran | 1 minggu | Pengujian dan serah terima.",
+        { label: "24, 24, 52" },
+      ),
+    ]),
+    s("Investasi", [
+      b(
+        "cost",
+        "Pengembangan sistem | 1 | Paket | 0\nInfrastruktur awal | 1 | Paket | 0",
+        { label: "Total Investasi", counted: true },
+      ),
+      b("caption", "Skema Pembayaran"),
+      b("payment", "Uang Muka (DP) | 50\nPelunasan | 50", { label: "Total" }),
+    ]),
+    s("Syarat & Ketentuan", [
+      b(
+        "numbered",
+        "Uang muka dibayar sebelum pekerjaan dimulai.\nPelunasan dibayar saat penyerahan hasil akhir.\nKepemilikan hasil pekerjaan beralih ke klien setelah pembayaran penuh.",
+      ),
+    ]),
+    s("Penutup", [
+      b(
+        "paragraph",
+        "Terima kasih atas kesempatan ini. Tanda tangan di bawah menandakan persetujuan atas lingkup, jadwal, dan biaya di atas.",
+      ),
+    ]),
+  ],
+});
 
-const OUT_OF_SCOPE_BUILD = [
-  "Hal berikut tidak termasuk dalam proposal ini dan akan diberi penawaran terpisah:",
-  "- Fitur atau modul baru",
-  "- Perombakan desain atau rebranding",
-  "- Integrasi third-party tambahan",
-  "- Biaya domain, hosting, dan layanan pihak ketiga",
-].join("\n");
-
-const OUT_OF_SCOPE_RETAINER = [
-  "Berikut ini berada di luar cakupan retainer bulanan dan akan diberikan invoice terpisah:",
-  "- Fitur atau modul baru",
-  "- Perombakan desain atau rebranding",
-  "- Perubahan model data atau skema",
-  "- Integrasi third-party",
-  "- Scaling/migrasi infrastruktur",
-  "- Pekerjaan yang memerlukan perubahan scope of work",
-  "Permintaan di luar scope akan diakui secara tertulis dan penawaran harga terpisah akan diberikan sebelum pekerjaan dimulai.",
-].join("\n");
+const BLANK = (): ProposalContent => ({
+  coverTitle: "PROPOSAL\n{project}",
+  headerText: "{client} | Proposal",
+  providerRole: "Penyedia Jasa",
+  showToc: false,
+  leftLabel: "Diajukan oleh,",
+  rightLabel: "Mengetahui dan menyetujui,",
+  sections: [s("Pendahuluan", [b("paragraph")])],
+});
 
 const BUILDERS: Record<ProposalTemplateId, () => ProposalContent> = {
-  build: () => ({
-    validDays: 14,
-    subtitle: "Proposal Pengembangan Sistem",
-    meta: [makeMeta({ label: "Estimasi durasi", value: "6 minggu" })],
-    summary:
-      "Proposal ini mengajukan pengembangan sistem sesuai kebutuhan yang telah didiskusikan. Isinya mencakup lingkup, jadwal, biaya, dan syarat kerja sama.",
-    blocks: [
-      makeBlock({
-        title: "Tujuan proyek",
-        kind: "text",
-        width: "full",
-        body: "Tuliskan masalah yang diselesaikan proyek ini dan hasil yang diharapkan klien.",
-      }),
-      makeBlock({
-        title: "Lingkup pekerjaan",
-        kind: "checklist",
-        body: [
-          "Desain UI dasbor & pengembangan frontend",
-          "Integrasi API backend",
-          "Komponen visualisasi data",
-          "Hingga 3 putaran revisi",
-          "Penyerahan source file setelah pembayaran akhir",
-        ].join("\n"),
-      }),
-      makeBlock({
-        title: "Hasil akhir",
-        kind: "checklist",
-        body: [
-          "Sistem siap pakai",
-          "Source file",
-          "Dokumentasi singkat penggunaan",
-        ].join("\n"),
-      }),
-      makeBlock({
-        title: "Di luar lingkup",
-        kind: "callout",
-        width: "full",
-        body: OUT_OF_SCOPE_BUILD,
-      }),
-      makeBlock({
-        title: "Kebijakan revisi",
-        kind: "text",
-        width: "full",
-        body: "Proposal ini mencakup 3 putaran revisi setelah pengiriman. Revisi tambahan, fitur baru, atau pekerjaan apa pun di luar ruang lingkup yang disepakati akan diberi penawaran dan ditagih secara terpisah.",
-      }),
-    ],
-    phases: [
-      makePhase({
-        title: "Discovery & desain",
-        duration: "1 minggu",
-        description: "Konfirmasi kebutuhan, alur, dan desain antarmuka.",
-      }),
-      makePhase({
-        title: "Pengembangan",
-        duration: "3 minggu",
-        description: "Frontend, integrasi API backend, visualisasi data.",
-      }),
-      makePhase({
-        title: "Review & revisi",
-        duration: "1 minggu",
-        description: "Hingga 3 putaran revisi.",
-      }),
-      makePhase({
-        title: "Peluncuran & serah terima",
-        duration: "1 minggu",
-        description: "Deploy, konfigurasi, dan penyerahan source file.",
-      }),
-    ],
-    items: [
-      makePriceItem({
-        title: "Pengembangan sistem",
-        description:
-          "Desain, pengembangan, dan peluncuran sesuai lingkup di atas.",
-      }),
-    ],
-    adjustments: [],
-    payments: [
-      makePayStep({
-        label: "Uang muka (DP)",
-        percent: 50,
-        note: "Dibayar saat persetujuan, sebelum pekerjaan dimulai.",
-      }),
-      makePayStep({
-        label: "Pelunasan",
-        percent: 50,
-        note: "Dibayar saat penyerahan hasil akhir dan persetujuan klien.",
-      }),
-    ],
-    terms: BUILD_TERMS,
-    closing: CLOSING,
-  }),
-
-  retainer: () => ({
-    validDays: 14,
-    subtitle: "Proposal Retainer Maintenance",
-    meta: [
-      makeMeta({
-        label: "Siklus penagihan",
-        value: "Bulanan · Tanggal 25 setiap bulan",
-      }),
-    ],
-    summary:
-      "Proposal ini mengajukan layanan maintenance bulanan agar sistem tetap berjalan, aman, dan terpantau.",
-    blocks: [
-      makeBlock({
-        title: "Termasuk dalam retainer",
-        kind: "checklist",
-        width: "full",
-        body: [
-          "Uptime monitoring & availability checks",
-          "Bug fixes & error resolutions",
-          "Update keamanan & kerahasiaan data",
-          "Performance report bulanan",
-        ].join("\n"),
-      }),
-      makeBlock({
-        title: "Tidak termasuk dalam retainer",
-        kind: "callout",
-        width: "full",
-        body: OUT_OF_SCOPE_RETAINER,
-      }),
-    ],
-    phases: [],
-    items: [
-      makePriceItem({
-        title: "Monthly Maintenance Retainer",
-        description: "Layanan maintenance per bulan.",
-      }),
-    ],
-    adjustments: [],
-    payments: [
-      makePayStep({
-        label: "Tagihan bulanan",
-        percent: 100,
-        note: "Diterbitkan tanggal 25 setiap bulan, jatuh tempo 14 hari kalender.",
-      }),
-    ],
-    terms:
-      "Tagihan diterbitkan pada tanggal 25 setiap bulan (hari kerja) dan jatuh tempo dalam waktu 14 hari kalender. Pembayaran berlaku bulanan. Keterlambatan pembayaran dapat mengakibatkan penangguhan sementara hingga tagihan dilunasi sepenuhnya.",
-    closing: CLOSING,
-  }),
-
-  blank: () => ({
-    validDays: 14,
-    subtitle: "",
-    meta: [],
-    summary: "",
-    blocks: [],
-    phases: [],
-    items: [makePriceItem()],
-    adjustments: [],
-    payments: [],
-    terms: "",
-    closing: "",
-  }),
+  full: FULL,
+  short: SHORT,
+  blank: BLANK,
 };
 
 export function buildTemplate(id: ProposalTemplateId): ProposalContent {
@@ -227,9 +340,13 @@ export function createProposalDraft(
     numberOverride: "",
     printed: false,
     issueDate,
+    showNumber: false,
     clientName: "",
-    clientAddress: "",
-    projectTitle: "",
+    clientUnit: "",
+    coverLogo: "",
+    projectName: "",
+    approverName: "",
+    approverRole: "",
     ...buildTemplate(templateId),
   };
 }
